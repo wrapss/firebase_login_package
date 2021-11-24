@@ -17,20 +17,23 @@ class AuthenticationRepository {
   Future<void> verifyPhoneNumber(String phoneNumber) async {
     try {
       await _firebaseAuth.verifyPhoneNumber(
-          phoneNumber: phoneNumber,
-          verificationCompleted:
-              (PhoneAuthCredential phoneAuthCredential) async {
-            await _firebaseAuth.signInWithCredential(phoneAuthCredential);
-          },
-          verificationFailed: (FirebaseAuthException authException) {
-            message = authException.message;
-          },
-          codeSent: (String verificationId, [int? forceResendingToken]) {
-            _verificationId = verificationId;
-          },
-          codeAutoRetrievalTimeout: (String verificationId) {
-            _verificationId = verificationId;
-          });
+        phoneNumber: phoneNumber,
+        timeout: const Duration(seconds: 60),
+        verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
+          await _firebaseAuth.signInWithCredential(phoneAuthCredential);
+        },
+        verificationFailed: (FirebaseAuthException authException) {
+          message = authException.message;
+        },
+        codeSent: (String verificationId, [int? forceResendingToken]) {
+          _verificationId = verificationId;
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          _verificationId = verificationId;
+        },
+      );
+      print(message);
+      print(_verificationId);
     } on Exception {
       throw PhoneVerificationInFailure;
     }
