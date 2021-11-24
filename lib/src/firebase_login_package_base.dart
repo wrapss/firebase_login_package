@@ -32,7 +32,6 @@ class AuthenticationRepository {
           _verificationId = verificationId;
         },
       );
-      print(_verificationId);
     } on Exception {
       throw PhoneVerificationInFailure;
     }
