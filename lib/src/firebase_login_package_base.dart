@@ -48,4 +48,14 @@ class AuthenticationRepository {
       throw PhoneSignInFailure;
     }
   }
+
+  Future<void> logOut() async {
+    try {
+      await Future.wait([
+        _firebaseAuth.signOut(),
+      ]);
+    } on Exception {
+      throw LogOutFailure();
+    }
+  }
 }
