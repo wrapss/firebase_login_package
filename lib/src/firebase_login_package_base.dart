@@ -7,20 +7,20 @@ class PhoneVerificationInFailure implements Exception {}
 class LogOutFailure implements Exception {}
 
 class AuthenticationRepository {
-  final FirebaseAuth _firebaseAuth;
+  final FirebaseAuth firebaseAuth;
   User? user;
   String? message;
   late String _verificationId;
 
-  AuthenticationRepository(this._firebaseAuth);
+  AuthenticationRepository(this.firebaseAuth);
 
   Future<void> verifyPhoneNumber(String phoneNumber) async {
     try {
-      await _firebaseAuth.verifyPhoneNumber(
+      await firebaseAuth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         timeout: const Duration(seconds: 60),
         verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
-          await _firebaseAuth.signInWithCredential(phoneAuthCredential);
+          await firebaseAuth.signInWithCredential(phoneAuthCredential);
         },
         verificationFailed: (FirebaseAuthException authException) {
           message = authException.message;
@@ -43,7 +43,7 @@ class AuthenticationRepository {
         verificationId: _verificationId,
         smsCode: smsCode,
       );
-      user = (await _firebaseAuth.signInWithCredential(credential)).user!;
+      user = (await firebaseAuth.signInWithCredential(credential)).user!;
     } on Exception {
       throw PhoneSignInFailure;
     }
@@ -52,7 +52,7 @@ class AuthenticationRepository {
   Future<void> logOut() async {
     try {
       await Future.wait([
-        _firebaseAuth.signOut(),
+        firebaseAuth.signOut(),
       ]);
     } on Exception {
       throw LogOutFailure();
