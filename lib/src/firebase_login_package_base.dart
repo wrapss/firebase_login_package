@@ -66,6 +66,41 @@ class AuthenticationRepository {
     }
   }
 
+  Future<void> verifyPhoneNumberUpdate(String phoneNumber) async {
+    try {
+      await firebaseAuth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        timeout: const Duration(seconds: 60),
+        verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
+          await user!.updatePhoneNumber(phoneAuthCredential);
+        },
+        verificationFailed: (FirebaseAuthException authException) {
+          message = authException.message;
+        },
+        codeSent: (String verificationId, [int? forceResendingToken]) {
+          _verificationId = verificationId;
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          _verificationId = verificationId;
+        },
+      );
+    } on Exception {
+      throw PhoneVerificationInFailure;
+    }
+  }
+
+  Future<void> updatePhoneNumber(String smsCode) async {
+    try {
+      final PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: _verificationId,
+        smsCode: smsCode,
+      );
+      await user!.updatePhoneNumber(credential);
+    } on Exception {
+      throw PhoneVerificationInFailure;
+    }
+  }
+
   Future<void> logOut() async {
     try {
       await Future.wait([
