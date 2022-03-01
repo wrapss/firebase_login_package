@@ -38,15 +38,11 @@ class AuthenticationRepository {
   }
 
   Future<void> signInWithPhoneNumber(String smsCode) async {
-    try {
-      final PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: _verificationId,
-        smsCode: smsCode,
-      );
-      user = (await firebaseAuth.signInWithCredential(credential)).user!;
-    } on Exception {
-      throw PhoneSignInFailure;
-    }
+    final PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      verificationId: _verificationId,
+      smsCode: smsCode,
+    );
+    user = (await firebaseAuth.signInWithCredential(credential)).user!;
   }
 
   Future<void> loginWithEmailAndPassword(String email, String password) async {
