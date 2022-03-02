@@ -1,18 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-class PhoneSignInFailure implements Exception {}
-
-class PhoneVerificationInFailure implements Exception {}
-
-class LogOutFailure implements Exception {}
-
 class AuthenticationRepository {
+  AuthenticationRepository(this.firebaseAuth);
+
   final FirebaseAuth firebaseAuth;
   User? user;
   String? message;
   late String _verificationId;
-
-  AuthenticationRepository(this.firebaseAuth);
 
   Future<void> verifyPhoneNumber(String phoneNumber) async {
     try {
@@ -32,8 +26,8 @@ class AuthenticationRepository {
           _verificationId = verificationId;
         },
       );
-    } on Exception {
-      throw PhoneVerificationInFailure;
+    } on FirebaseAuthException catch (e) {
+      return print(e);
     }
   }
 
@@ -44,8 +38,8 @@ class AuthenticationRepository {
         smsCode: smsCode,
       );
       user = (await firebaseAuth.signInWithCredential(credential)).user!;
-    } catch (e) {
-      throw Exception();
+    } on FirebaseAuthException catch (e) {
+      return print(e);
     }
   }
 
@@ -57,8 +51,8 @@ class AuthenticationRepository {
         password: password,
       );
       user = userCredential.user;
-    } on FirebaseAuthException {
-      rethrow;
+    } on FirebaseAuthException catch (e) {
+      return print(e);
     }
   }
 
@@ -80,8 +74,8 @@ class AuthenticationRepository {
           _verificationId = verificationId;
         },
       );
-    } on Exception {
-      throw PhoneVerificationInFailure;
+    } on FirebaseAuthException catch (e) {
+      return print(e);
     }
   }
 
@@ -92,8 +86,8 @@ class AuthenticationRepository {
         smsCode: smsCode,
       );
       await user!.updatePhoneNumber(credential);
-    } on Exception {
-      throw PhoneVerificationInFailure;
+    } on FirebaseAuthException catch (e) {
+      return print(e);
     }
   }
 
@@ -102,8 +96,8 @@ class AuthenticationRepository {
       await Future.wait([
         firebaseAuth.signOut(),
       ]);
-    } on Exception {
-      throw LogOutFailure();
+    } on FirebaseAuthException catch (e) {
+      return print(e);
     }
   }
 }
