@@ -6,7 +6,7 @@ class AuthenticationRepository {
   final FirebaseAuth firebaseAuth;
   User? user;
   String? message;
-  late String _verificationId;
+  late String verificationId;
 
   Future<void> verifyPhoneNumber(String phoneNumber) async {
     return await firebaseAuth.verifyPhoneNumber(
@@ -19,18 +19,17 @@ class AuthenticationRepository {
         message = authException.message;
       },
       codeSent: (String verificationId, [int? forceResendingToken]) {
-        _verificationId = verificationId;
+        this.verificationId = verificationId;
       },
       codeAutoRetrievalTimeout: (String verificationId) {
-        _verificationId = verificationId;
-        print(verificationId);
+        this.verificationId = verificationId;
       },
     );
   }
 
   Future<void> signInWithPhoneNumber(String smsCode) async {
     final PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: _verificationId,
+      verificationId: verificationId,
       smsCode: smsCode,
     );
     user = (await firebaseAuth.signInWithCredential(credential)).user!;
@@ -56,17 +55,17 @@ class AuthenticationRepository {
         message = authException.message;
       },
       codeSent: (String verificationId, [int? forceResendingToken]) {
-        _verificationId = verificationId;
+        this.verificationId = verificationId;
       },
       codeAutoRetrievalTimeout: (String verificationId) {
-        _verificationId = verificationId;
+        this.verificationId = verificationId;
       },
     );
   }
 
   Future<void> updatePhoneNumber(String smsCode) async {
     final PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: _verificationId,
+      verificationId: verificationId,
       smsCode: smsCode,
     );
     return await user!.updatePhoneNumber(credential);
