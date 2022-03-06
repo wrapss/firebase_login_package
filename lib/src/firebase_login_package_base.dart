@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthenticationRepository {
   AuthenticationRepository(this.firebaseAuth);
@@ -69,6 +70,17 @@ class AuthenticationRepository {
       smsCode: smsCode,
     );
     return await user!.updatePhoneNumber(credential);
+  }
+
+  Future<void> loginWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+    user = (await firebaseAuth.signInWithCredential(credential)).user!;
   }
 
   Future<void> logOut() async {
