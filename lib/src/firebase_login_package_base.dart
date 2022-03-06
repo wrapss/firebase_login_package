@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthenticationRepository {
-  AuthenticationRepository({required this.firebaseAuth, this.verificationId});
+  AuthenticationRepository({required this.firebaseAuth});
 
   final FirebaseAuth firebaseAuth;
   User? user;
@@ -22,7 +22,7 @@ class AuthenticationRepository {
         verificationId = verificationId;
       },
       codeAutoRetrievalTimeout: (String verificationIdValue) {
-        // verificationId = verificationIdValue;
+        verificationId = verificationIdValue;
       },
     );
   }
