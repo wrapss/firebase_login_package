@@ -72,7 +72,7 @@ class AuthenticationRepository {
     return await user!.updatePhoneNumber(credential);
   }
 
-  Future<void> loginWithGoogle() async {
+  Future<void> singInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication? googleAuth =
         await googleUser?.authentication;
