@@ -6,7 +6,7 @@ class AuthenticationRepository {
   final FirebaseAuth firebaseAuth;
   User? user;
   String? message;
-  String? verificationId;
+  late String verificationId;
 
   Future<void> verifyPhoneNumber(String phoneNumber) async {
     return await firebaseAuth.verifyPhoneNumber(
@@ -29,7 +29,7 @@ class AuthenticationRepository {
 
   Future<void> signInWithPhoneNumber(String smsCode) async {
     final PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: verificationId!,
+      verificationId: verificationId,
       smsCode: smsCode,
     );
     user = (await firebaseAuth.signInWithCredential(credential)).user!;
@@ -65,7 +65,7 @@ class AuthenticationRepository {
 
   Future<void> updatePhoneNumber(String smsCode) async {
     final PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: verificationId!,
+      verificationId: verificationId,
       smsCode: smsCode,
     );
     return await user!.updatePhoneNumber(credential);
