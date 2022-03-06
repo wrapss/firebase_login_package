@@ -23,6 +23,7 @@ class AuthenticationRepository {
       },
       codeAutoRetrievalTimeout: (String verificationId) {
         _verificationId = verificationId;
+        print(verificationId);
       },
     );
   }
