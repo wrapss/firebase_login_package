@@ -27,9 +27,9 @@ class AuthenticationRepository {
     );
   }
 
-  Future<void> signInWithPhoneNumber(String smsCode, verificationId) async {
+  Future<void> signInWithPhoneNumber(String smsCode) async {
     final PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: verificationId,
+      verificationId: verificationId!,
       smsCode: smsCode,
     );
     user = (await firebaseAuth.signInWithCredential(credential)).user!;
