@@ -30,6 +30,7 @@ class AuthenticationRepository {
       verificationId: _verificationId,
       smsCode: smsCode,
     );
+    _firebaseAuth.signInWithCredential(credential);
   }
 
   Future<void> loginWithEmailAndPassword(String email, String password) async {
