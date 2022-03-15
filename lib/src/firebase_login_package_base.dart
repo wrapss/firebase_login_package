@@ -38,11 +38,21 @@ class AuthenticationRepository {
 
   Future<void> loginWithEmailAndPassword(String email, String password) async {
     UserCredential userCredential =
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
     user = userCredential.user;
+  }
+
+  Future<void> signInWithEmailAndPassword(String email, String password) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      user = userCredential.user;
+    } on FirebaseAuthException catch (e) {
+      rethrow;
+    }
   }
 
   Future<void> verifyPhoneNumberUpdate(String phoneNumber) async {
@@ -75,7 +85,7 @@ class AuthenticationRepository {
   Future<void> singInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication? googleAuth =
-    await googleUser?.authentication;
+        await googleUser?.authentication;
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
