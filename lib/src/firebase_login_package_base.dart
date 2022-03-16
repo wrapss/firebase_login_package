@@ -5,7 +5,7 @@ class AuthenticationRepository {
   AuthenticationRepository(this.firebaseAuth);
 
   final FirebaseAuth firebaseAuth;
-  User? user;
+  UserCredential? user;
   String? message;
   late String verificationId;
 
@@ -33,16 +33,16 @@ class AuthenticationRepository {
       verificationId: verificationId,
       smsCode: smsCode,
     );
-    user = (await firebaseAuth.signInWithCredential(credential)).user!;
+    user = (await firebaseAuth.signInWithCredential(credential));
   }
 
   Future<void> loginWithEmailAndPassword(String email, String password) async {
     UserCredential userCredential =
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
-    user = userCredential.user;
+    user = userCredential;
   }
 
   Future<void> verifyPhoneNumberUpdate(String phoneNumber) async {
@@ -50,7 +50,7 @@ class AuthenticationRepository {
       phoneNumber: phoneNumber,
       timeout: const Duration(seconds: 60),
       verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
-        await user!.updatePhoneNumber(phoneAuthCredential);
+        await user!.user!.updatePhoneNumber(phoneAuthCredential);
       },
       verificationFailed: (FirebaseAuthException authException) {
         message = authException.message;
@@ -69,18 +69,18 @@ class AuthenticationRepository {
       verificationId: verificationId,
       smsCode: smsCode,
     );
-    return await user!.updatePhoneNumber(credential);
+    return await user!.user!.updatePhoneNumber(credential);
   }
 
   Future<void> singInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication? googleAuth =
-    await googleUser?.authentication;
+        await googleUser?.authentication;
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
-    user = (await firebaseAuth.signInWithCredential(credential)).user!;
+    user = await firebaseAuth.signInWithCredential(credential);
   }
 
   Future<void> logOut() async {
