@@ -45,6 +45,17 @@ class AuthenticationRepository {
     user = userCredential;
   }
 
+  Future<void> createUserWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      user = userCredential.user;
+    } on FirebaseAuthException catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> verifyPhoneNumberUpdate(String phoneNumber) async {
     return await firebaseAuth.verifyPhoneNumber(
       phoneNumber: phoneNumber,
