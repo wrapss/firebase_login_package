@@ -44,6 +44,7 @@ class AuthenticationRepository {
       password: password,
     );
     user = userCredential;
+    print(userCredential.credential);
     return userCredential;
   }
 
