@@ -36,16 +36,19 @@ class AuthenticationRepository {
     user = (await firebaseAuth.signInWithCredential(credential));
   }
 
-  Future<UserCredential> loginWithEmailAndPassword(
+  Future<UserCredential?> loginWithEmailAndPassword(
       String email, String password) async {
-    UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
+    await FirebaseAuth.instance
+        .signInWithEmailAndPassword(
       email: email,
       password: password,
-    );
-    user = userCredential;
-    print(userCredential.credential);
-    return userCredential;
+    )
+        .then((value) {
+      user = value;
+      print(value.credential);
+      return value;
+    });
+    return null;
   }
 
   Future<void> createUserWithEmailAndPassword(
