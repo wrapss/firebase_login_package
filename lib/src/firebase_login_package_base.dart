@@ -50,7 +50,7 @@ class AuthenticationRepository {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      user = userCredential.user;
+      user = userCredential;
     } on FirebaseAuthException catch (e) {
       rethrow;
     }
