@@ -16,7 +16,7 @@ class AuthenticationRepository {
       verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
         await firebaseAuth.signInWithCredential(phoneAuthCredential);
       },
-      verificationFailed: (FirebaseAuthException authException) async {
+      verificationFailed: (FirebaseAuthException authException) {
         message = authException.message;
       },
       codeSent: (String verificationId, [int? forceResendingToken]) {
