@@ -9,14 +9,14 @@ class AuthenticationRepository {
   String? message;
   late String verificationId;
 
-  Future<void> verifyPhoneNumber(String phoneNumber) async {
-    return await firebaseAuth.verifyPhoneNumber(
+  Future<String?> verifyPhoneNumber(String phoneNumber) async {
+    await firebaseAuth.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       timeout: const Duration(seconds: 60),
       verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
         await firebaseAuth.signInWithCredential(phoneAuthCredential);
       },
-      verificationFailed: (FirebaseAuthException authException) {
+      verificationFailed: (FirebaseAuthException authException) async {
         message = authException.message;
       },
       codeSent: (String verificationId, [int? forceResendingToken]) {
@@ -26,6 +26,7 @@ class AuthenticationRepository {
         this.verificationId = verificationId;
       },
     );
+    return message;
   }
 
   Future<void> signInWithPhoneNumber(String smsCode) async {
