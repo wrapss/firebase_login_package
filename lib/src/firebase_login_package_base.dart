@@ -6,19 +6,16 @@ class AuthenticationRepository {
 
   final FirebaseAuth firebaseAuth;
   User? user;
-  String? message;
   late String verificationId;
 
-  Future<String?> verifyPhoneNumber(String phoneNumber) async {
+  Future<void> verifyPhoneNumber(String phoneNumber) async {
     await firebaseAuth.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       timeout: const Duration(seconds: 60),
       verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
         await firebaseAuth.signInWithCredential(phoneAuthCredential);
       },
-      verificationFailed: (FirebaseAuthException authException) {
-        message = authException.message;
-      },
+      verificationFailed: (FirebaseAuthException authException) async {},
       codeSent: (String verificationId, [int? forceResendingToken]) {
         this.verificationId = verificationId;
       },
@@ -26,7 +23,6 @@ class AuthenticationRepository {
         this.verificationId = verificationId;
       },
     );
-    return message;
   }
 
   Future<void> signInWithPhoneNumber(String smsCode) async {
@@ -49,9 +45,9 @@ class AuthenticationRepository {
   Future<void> createUserWithEmailAndPassword(
       String email, String password) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
+      await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       rethrow;
     }
   }
@@ -63,9 +59,7 @@ class AuthenticationRepository {
       verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
         await user!.updatePhoneNumber(phoneAuthCredential);
       },
-      verificationFailed: (FirebaseAuthException authException) {
-        message = authException.message;
-      },
+      verificationFailed: (FirebaseAuthException authException) {},
       codeSent: (String verificationId, [int? forceResendingToken]) {
         this.verificationId = verificationId;
       },
@@ -87,7 +81,7 @@ class AuthenticationRepository {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication? googleAuth =
         await googleUser?.authentication;
-    final credential = GoogleAuthProvider.credential(
+    GoogleAuthProvider.credential(
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
