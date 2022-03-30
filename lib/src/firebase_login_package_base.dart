@@ -63,9 +63,7 @@ class AuthenticationRepository {
       codeSent: (String verificationId, [int? forceResendingToken]) {
         this.verificationId = verificationId;
       },
-      codeAutoRetrievalTimeout: (String verificationId) {
-        this.verificationId = verificationId;
-      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
     );
   }
 
