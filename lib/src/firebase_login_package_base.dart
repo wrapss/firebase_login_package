@@ -42,10 +42,10 @@ class AuthenticationRepository {
     user = userCredential.user;
   }
 
-  Future<void> createUserWithEmailAndPassword(
+  Future<UserCredential?> createUserWithEmailAndPassword(
       String email, String password) async {
     try {
-      await FirebaseAuth.instance
+      return await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException {
       rethrow;
